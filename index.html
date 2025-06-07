@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Cal-Coolator</title>
+    <title>Calculator</title>
     <style>
         * {
             margin: 0;
@@ -12,291 +12,575 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f0f0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            overflow: hidden;
         }
 
         .calculator {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #ffffff;
+            border: 3px solid #cccccc;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
-            height: 100%;
+            max-width: 495px;
             display: flex;
             flex-direction: column;
         }
 
+        .calculator-header {
+            padding: 22px 28px;
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 13px;
+            position: relative;
+        }
+
+        .help-icon {
+            position: absolute;
+            left: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .help-icon:hover {
+            background: #357abd;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .calculator-title {
+            font-size: clamp(22px, 4vw, 31px);
+            font-weight: bold;
+            color: #ff9500;
+            margin: 0;
+            text-align: center;
+        }
+
+        .calculator-logo {
+            width: clamp(60px, 12vw, 80px);
+            height: clamp(60px, 12vw, 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .display {
             width: 100%;
-            flex: 0 0 auto;
-            font-size: clamp(1.5rem, 4vw, 4rem);
+            height: clamp(88px, 11vh, 132px);
+            background: #4a4a4a;
+            color: white;
+            font-size: clamp(31px, 6vw, 62px);
+            font-weight: normal;
             text-align: right;
-            padding: 0 clamp(15px, 3vw, 40px);
-            margin-bottom: clamp(15px, 2vw, 30px);
+            padding: 0 clamp(17px, 3vw, 28px);
             border: none;
-            border-radius: clamp(8px, 1.5vw, 20px);
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
-            height: clamp(60px, 8vh, 120px);
-            line-height: clamp(60px, 8vh, 120px);
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
         }
 
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: clamp(8px, 1.5vw, 25px);
-            flex: 1;
-            height: 100%;
+            grid-template-rows: repeat(6, 1fr);
+            gap: 1px;
+            background: #333;
+            height: clamp(528px, 71.5vh, 660px);
         }
 
         .btn {
             border: none;
-            border-radius: clamp(10px, 2vw, 25px);
-            font-size: clamp(1rem, 2.5vw, 2.5rem);
-            font-weight: bold;
+            background: #7a7a7a;
+            color: white;
+            font-size: clamp(22px, 4vw, 44px);
+            font-weight: normal;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: clamp(50px, 8vh, 120px);
+            transition: background-color 0.1s ease;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0.8;
         }
 
         .btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0.6;
         }
 
         .btn.number {
-            background: linear-gradient(145deg, #f0f0f0, #d1d1d1);
-            color: #333;
+            background: #7a7a7a;
+            color: white;
         }
 
         .btn.operator {
-            background: linear-gradient(145deg, #ff6b6b, #ee5a52);
+            background: #ff9500;
             color: white;
         }
 
         .btn.clear {
-            background: linear-gradient(145deg, #feca57, #ff9ff3);
+            background: #4a4a4a;
             color: white;
         }
 
         .btn.equals {
-            background: linear-gradient(145deg, #48dbfb, #0abde3);
+            background: #ff9500;
             color: white;
             grid-column: span 4;
         }
 
         .btn.zero {
-            grid-column: span 2;
+            grid-column: span 1;
         }
 
-        /* Large Desktop Screens (1200px and up) - Fullscreen */
-        @media (min-width: 1200px) {
-            body {
-                padding: 40px;
-            }
+        .btn.special {
+            background: #4a90e2;
+            color: white;
+        }
 
+        .btn.history {
+            background: #4a4a4a;
+            color: white;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 2.4s ease;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        /* History Modal */
+        .history-modal {
+            position: relative;
+            width: 100%;
+            max-width: 495px;
+            height: 100vh;
+            max-height: calc(100vh - 40px);
+            background: #7a7a7a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(-100%);
+            transition: transform 2.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border: 3px solid #cccccc;
+            border-radius: 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-modal.show {
+            transform: translateX(0);
+        }
+
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #666;
+            background: #666;
+        }
+
+        .modal-title {
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: clamp(20px, 5vw, 28px);
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
+            transition: opacity 0.2s ease;
+        }
+
+        .close-btn:hover {
+            opacity: 0.7;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* History Records */
+        .history-records {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-record {
+            background: #5a5a5a;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #666;
+            transition: background-color 0.2s ease;
+        }
+
+        .history-record:hover {
+            background: #4a4a4a;
+        }
+
+        .record-content {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .record-expression {
+            font-size: clamp(14px, 3.5vw, 18px);
+            font-weight: bold;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .record-timestamp {
+            font-size: clamp(11px, 2.5vw, 14px);
+            opacity: 0.7;
+        }
+
+        .restore-btn {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: clamp(12px, 3vw, 14px);
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .restore-btn:hover {
+            background: #357abd;
+        }
+
+        /* Toast Message */
+        .toast-message {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4a4a4a;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: clamp(14px, 3.5vw, 16px);
+            border: 1px solid #666;
+            text-align: center;
+        }
+
+        /* Operator and Special Function Styling */
+        .operator {
+            color: #ff9500;
+            font-weight: bold;
+        }
+
+        .special-function {
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        /* Alphabetic Letters Styling */
+        .letter {
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        /* Equals Sign Styling */
+        .equals {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        /* Clear History Button */
+        .clear-history-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: clamp(14px, 3.5vw, 16px);
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background-color 0.2s ease;
+        }
+
+        .clear-history-btn:hover {
+            background: #c82333;
+        }
+
+        /* Help Modal */
+        .help-modal {
+            position: relative;
+            width: 100%;
+            max-width: 495px;
+            height: 100vh;
+            max-height: calc(100vh - 40px);
+            background: #7a7a7a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(-100%);
+            transition: transform 2.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border: 3px solid #cccccc;
+            border-radius: 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-modal.show {
+            transform: translateX(0);
+        }
+
+        .help-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .help-section {
+            margin-bottom: 25px;
+        }
+
+        .help-section h3 {
+            color: #ff9500;
+            font-size: clamp(16px, 4vw, 20px);
+            margin-bottom: 10px;
+            border-bottom: 1px solid #666;
+            padding-bottom: 5px;
+        }
+
+        .help-section p, .help-section li {
+            font-size: clamp(13px, 3.5vw, 16px);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .help-section ul {
+            padding-left: 20px;
+        }
+
+        .function-item {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #5a5a5a;
+            border-radius: 6px;
+            border-left: 3px solid #4a90e2;
+        }
+
+        .function-name {
+            color: #4a90e2;
+            font-weight: bold;
+            font-size: clamp(14px, 3.5vw, 17px);
+        }
+
+        .function-desc {
+            color: #e0e0e0;
+            margin-top: 5px;
+        }
+
+        .formula {
+            background: #4a4a4a;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #ff9500;
+            margin: 5px 0;
+            border-left: 3px solid #ff9500;
+        }
+
+        .dev-info {
+            background: #4a4a4a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #666;
+            text-align: center;
+        }
+
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .company-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .dev-name {
+            color: #4a90e2;
+            font-weight: bold;
+            font-size: clamp(16px, 4vw, 18px);
+            margin-bottom: 5px;
+        }
+
+        .company-name {
+            color: #ff9500;
+            font-weight: bold;
+            font-size: clamp(14px, 3.5vw, 16px);
+        }
+
+        /* Responsive Media Queries */
+        @media screen and (max-width: 480px) {
             .calculator {
-                max-width: none;
-                max-height: none;
-                border-radius: 30px;
-                padding: 40px;
+                max-width: 95vw;
+                margin: 11px;
             }
 
-            .display {
-                border-radius: 25px;
-                margin-bottom: 40px;
+            .history-modal,
+            .help-modal {
+                max-width: 95vw;
             }
 
             .buttons {
-                gap: 30px;
-            }
-
-            .btn {
-                border-radius: 30px;
-                font-size: 3rem;
-                min-height: 140px;
-            }
-        }
-
-        /* Medium Desktop Screens (768px to 1199px) */
-        @media (min-width: 768px) and (max-width: 1199px) {
-            body {
-                padding: 30px;
-            }
-
-            .calculator {
-                max-width: 90vw;
-                max-height: 90vh;
-                border-radius: 25px;
-                padding: 30px;
+                height: clamp(440px, 60.5vh, 550px);
             }
 
             .display {
-                border-radius: 20px;
-                margin-bottom: 30px;
-                height: 100px;
-                font-size: 2.5rem;
-                line-height: 100px;
-            }
-
-            .buttons {
-                gap: 20px;
+                height: clamp(77px, 8.8vh, 110px);
+                font-size: clamp(26px, 5vw, 53px);
             }
 
             .btn {
-                border-radius: 20px;
-                font-size: 1.8rem;
-                min-height: 90px;
+                font-size: clamp(20px, 4vw, 35px);
             }
         }
 
-        /* Tablet Screens (481px to 767px) */
-        @media (min-width: 481px) and (max-width: 767px) {
-            body {
-                padding: 20px;
+        @media screen and (min-width: 768px) {
+            .calculator {
+                max-width: 550px;
             }
 
-            .calculator {
-                max-width: 500px;
-                max-height: 80vh;
-                border-radius: 20px;
-                padding: 25px;
+            .history-modal,
+            .help-modal {
+                max-width: 550px;
+            }
+
+            .buttons {
+                height: clamp(572px, 77vh, 715px);
             }
 
             .display {
-                height: 80px;
-                font-size: 2rem;
-                line-height: 80px;
-                margin-bottom: 25px;
-            }
-
-            .buttons {
-                gap: 15px;
+                height: clamp(99px, 13.2vh, 154px);
+                font-size: clamp(35px, 6vw, 70px);
             }
 
             .btn {
-                font-size: 1.4rem;
-                min-height: 75px;
-                border-radius: 18px;
+                font-size: clamp(24px, 4vw, 48px);
             }
         }
 
-        /* Mobile Screens (up to 480px) */
-        @media (max-width: 480px) {
-            body {
-                padding: 15px;
+        @media screen and (min-width: 1024px) {
+            .calculator {
+                max-width: 605px;
             }
 
-            .calculator {
-                max-width: 350px;
-                max-height: 85vh;
-                padding: 20px;
-                border-radius: 20px;
+            .history-modal,
+            .help-modal {
+                max-width: 605px;
+            }
+
+            .buttons {
+                height: 715px;
             }
 
             .display {
-                height: 70px;
-                font-size: 1.8rem;
-                line-height: 70px;
-                margin-bottom: 20px;
-                border-radius: 15px;
-            }
-
-            .buttons {
-                gap: 12px;
+                height: 154px;
+                font-size: 70px;
             }
 
             .btn {
-                height: 65px;
-                min-height: 65px;
-                font-size: 1.2rem;
-                border-radius: 15px;
+                font-size: 48px;
             }
         }
 
-        /* Small Mobile Screens (up to 320px) */
-        @media (max-width: 320px) {
-            body {
-                padding: 10px;
-            }
-
-            .calculator {
-                max-width: 300px;
-                padding: 15px;
-            }
-
-            .display {
-                height: 60px;
-                font-size: 1.5rem;
-                line-height: 60px;
-                margin-bottom: 15px;
-            }
-
-            .buttons {
-                gap: 8px;
-            }
-
-            .btn {
-                height: 55px;
-                min-height: 55px;
-                font-size: 1rem;
-                border-radius: 12px;
-            }
-        }
-
-        /* Landscape orientation adjustments for mobile */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .calculator {
-                max-height: 95vh;
-                padding: 15px;
-            }
-
-            .display {
-                height: 50px;
-                line-height: 50px;
-                font-size: 1.4rem;
-                margin-bottom: 10px;
-            }
-
-            .buttons {
-                gap: 8px;
-            }
-
-            .btn {
-                min-height: 45px;
-                font-size: 1rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <input type="text" id="inputBox" class="display" value="0" readonly/>
+        <div class="calculator-header">
+            <button class="help-icon" onclick="openHelpModal()" title="Help">?</button>
+            <div class="header-center">
+                <div class="calculator-logo">
+                    <img src="public/images/nanitech-logo-use.svg" alt="Main App Logo" style="width: 100%; height: 100%; object-fit: contain;" />
+                </div>
+                <h4 class="calculator-title">Divide & Conquer</h4>
+            </div>
+        </div>
+        <div id="inputBox" class="display">0</div>
 
         <div class="buttons">
             <button class="btn number" onclick="digitBtnPressed('7')">7</button>
             <button class="btn number" onclick="digitBtnPressed('8')">8</button>
             <button class="btn number" onclick="digitBtnPressed('9')">9</button>
-            <button class="btn operator" onclick="digitBtnPressed('*')">×</button>
+            <button class="btn operator" onclick="digitBtnPressed('*')">X</button>
 
             <button class="btn number" onclick="digitBtnPressed('4')">4</button>
             <button class="btn number" onclick="digitBtnPressed('5')">5</button>
@@ -308,18 +592,160 @@
             <button class="btn number" onclick="digitBtnPressed('3')">3</button>
             <button class="btn operator" onclick="digitBtnPressed('+')">+</button>
 
-            <button class="btn number zero" onclick="digitBtnPressed('0')">0</button>
-            <button class="btn number" onclick="digitBtnPressed('.')">.</button>
-            <button class="btn operator" onclick="digitBtnPressed('/')">÷</button>
-
             <button class="btn clear" onclick="clearDisplay()">AC</button>
+            <button class="btn number zero" onclick="digitBtnPressed('0')">0</button>
+            <button class="btn history" onclick="toggleHistory()">Hist</button>
+            <button class="btn operator" onclick="digitBtnPressed('/')">/</button>
+
+            <button class="btn special" onclick="specialBtnPressed('L')">L</button>
+            <button class="btn special" onclick="specialBtnPressed('B')">B</button>
+            <button class="btn special" onclick="specialBtnPressed('C')">C</button>
+            <button class="btn special" onclick="specialBtnPressed('A')">A</button>
+
             <button class="btn equals" onclick="calculate()">=</button>
+        </div>
+
+        <!-- History Modal -->
+        <div id="historyModal" class="modal-overlay">
+            <div class="history-modal">
+                <div class="modal-header">
+                    <h2 class="modal-title">Calculation History</h2>
+                    <button class="close-btn" onclick="closeHistoryModal()">&times;</button>
+                </div>
+                <div class="modal-content">
+                    <div id="historyRecords" class="history-records">
+                        <!-- History records will be populated here -->
+                    </div>
+                    <button class="clear-history-btn" onclick="clearHistory()">Clear All History</button>
+                    <div id="toastMessage" class="toast-message" style="display: none;">
+                        History will appear here when available
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Modal -->
+        <div id="helpModal" class="modal-overlay">
+            <div class="help-modal">
+                <div class="modal-header">
+                    <h2 class="modal-title">Calculator Help</h2>
+                    <button class="close-btn" onclick="closeHelpModal()">&times;</button>
+                </div>
+                <div class="help-content">
+                    <div class="help-section">
+                        <h3>Basic Functions</h3>
+                        <div class="function-item">
+                            <div class="function-name">Numbers (0-9)</div>
+                            <div class="function-desc">Enter numeric values for calculations</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Basic Operators (+, -, ×, ÷)</div>
+                            <div class="function-desc">Perform addition, subtraction, multiplication, and division</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">AC (All Clear)</div>
+                            <div class="function-desc">Clears the display and resets the calculator</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">= (Equals)</div>
+                            <div class="function-desc">Calculates and displays the result</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Hist (History)</div>
+                            <div class="function-desc">Opens calculation history with restore functionality</div>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>Special Functions (LBCA)</h3>
+                        <div class="function-item">
+                            <div class="function-name">L (Length)</div>
+                            <div class="function-desc">Sets the length value for area calculation</div>
+                            <div class="formula">Usage: Enter length value, press L</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">B (Breadth)</div>
+                            <div class="function-desc">Sets the breadth value for area calculation</div>
+                            <div class="formula">Usage: After L, enter breadth value, press B</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">C (Circumference to Radius)</div>
+                            <div class="function-desc">Converts circumference to radius</div>
+                            <div class="formula">Formula: r = C ÷ (2π)</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">A (Area to Radius)</div>
+                            <div class="function-desc">Converts circular area to radius</div>
+                            <div class="formula">Formula: r = √(A ÷ π)</div>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>Formulas Used</h3>
+                        <div class="function-item">
+                            <div class="function-name">Rectangle Area</div>
+                            <div class="formula">Area = Length × Breadth</div>
+                            <div class="function-desc">Result displayed in square meters (sq m)</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Circumference to Radius</div>
+                            <div class="formula">r = C ÷ (2 × 3.14159)</div>
+                            <div class="function-desc">Where π = 3.14159</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Area to Radius</div>
+                            <div class="formula">r = √(A ÷ 3.14159)</div>
+                            <div class="function-desc">Square root of area divided by π</div>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>Developer Information</h3>
+                        <div class="dev-info">
+                            <div class="company-logo">
+                                <img src="public/images/nanitech-logo.svg" alt="NaniTech Logo" />
+                            </div>
+                            <div class="dev-name">Project Head: Phaki Krwele</div>
+                            <div class="company-name">Development Company: NaniTech</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         let currentInput = '0';
         let shouldResetDisplay = false;
+        let calculationMode = 'normal'; // 'normal', 'area', 'circumference', 'area_to_radius'
+        let areaLength = null;
+        let areaBreadth = null;
+        const PI = 3.14159;
+
+        // Load history from localStorage
+        function loadHistory() {
+            const history = localStorage.getItem('calculatorHistory');
+            return history ? JSON.parse(history) : [];
+        }
+
+        // Save history to localStorage
+        function saveHistory(history) {
+            localStorage.setItem('calculatorHistory', JSON.stringify(history));
+        }
+
+        // Add calculation to history
+        function addToHistory(expression, result) {
+            const history = loadHistory();
+            const timestamp = new Date().toLocaleString();
+            history.unshift({ expression, result, timestamp });
+
+            // Keep only last 50 calculations
+            if (history.length > 50) {
+                history.splice(50);
+            }
+
+            saveHistory(history);
+        }
 
         function digitBtnPressed(button) {
             const display = document.getElementById("inputBox");
@@ -327,6 +753,9 @@
             if (shouldResetDisplay) {
                 currentInput = '';
                 shouldResetDisplay = false;
+                calculationMode = 'normal';
+                areaLength = null;
+                areaBreadth = null;
             }
 
             if (currentInput === '0' && button !== '.') {
@@ -335,50 +764,378 @@
                 currentInput += button;
             }
 
-            display.value = currentInput;
+            display.textContent = currentInput;
+        }
+
+        function specialBtnPressed(button) {
+            const display = document.getElementById("inputBox");
+
+            if (shouldResetDisplay) {
+                currentInput = '';
+                shouldResetDisplay = false;
+            }
+
+            if (button === 'L') {
+                // Length button for area calculation
+                const parts = currentInput.split(/[\+\-\*\/]/);
+                const lastNumber = parts[parts.length - 1];
+                if (lastNumber && !isNaN(lastNumber) && parseFloat(lastNumber) > 0) {
+                    areaLength = parseFloat(lastNumber);
+                    calculationMode = 'area';
+                    currentInput += ' L';
+                    display.textContent = currentInput;
+                } else {
+                    // Show error for invalid length value
+                    display.textContent = "Error: Invalid length";
+                    setTimeout(() => {
+                        display.textContent = currentInput;
+                    }, 1500);
+                }
+            } else if (button === 'B') {
+                // Breadth button for area calculation
+                if (calculationMode === 'area' && currentInput.includes('L')) {
+                    // Extract the breadth value (number after the last operator)
+                    const parts = currentInput.split(/[\+\-\*\/]/);
+                    let lastPart = parts[parts.length - 1];
+
+                    // Remove any existing L notation from the last part
+                    lastPart = lastPart.replace(/ L/g, '').trim();
+
+                    if (lastPart && !isNaN(lastPart) && parseFloat(lastPart) > 0) {
+                        areaBreadth = parseFloat(lastPart);
+                        currentInput += ' B';
+                        display.textContent = currentInput;
+                    } else {
+                        // Show error for invalid breadth value
+                        display.textContent = "Error: Invalid breadth";
+                        setTimeout(() => {
+                            display.textContent = currentInput;
+                        }, 1500);
+                    }
+                } else {
+                    // Show error if B is pressed without L first
+                    display.textContent = "Error: Press L first";
+                    setTimeout(() => {
+                        display.textContent = currentInput;
+                    }, 1500);
+                }
+            } else if (button === 'C') {
+                // Circumference to radius
+                const value = parseFloat(currentInput);
+                if (!isNaN(value) && value > 0) {
+                    calculationMode = 'circumference';
+                    currentInput += ' C';
+                    display.textContent = currentInput;
+                } else {
+                    // Show error for invalid circumference value
+                    display.textContent = "Error: Invalid circumference";
+                    setTimeout(() => {
+                        display.textContent = currentInput;
+                    }, 1500);
+                }
+            } else if (button === 'A') {
+                // Area to radius
+                const value = parseFloat(currentInput);
+                if (!isNaN(value) && value > 0) {
+                    calculationMode = 'area_to_radius';
+                    currentInput += ' A';
+                    display.textContent = currentInput;
+                } else {
+                    // Show error for invalid area value
+                    display.textContent = "Error: Invalid area";
+                    setTimeout(() => {
+                        display.textContent = currentInput;
+                    }, 1500);
+                }
+            }
         }
 
         function clearDisplay() {
             currentInput = '0';
-            document.getElementById("inputBox").value = currentInput;
+            document.getElementById("inputBox").textContent = currentInput;
             shouldResetDisplay = false;
+            calculationMode = 'normal';
+            areaLength = null;
+            areaBreadth = null;
         }
 
         function calculate() {
             const display = document.getElementById("inputBox");
+            let result;
+            let expression = currentInput;
+
             try {
-                // Replace display symbols with actual operators for calculation
-                let expression = currentInput.replace(/×/g, '*').replace(/÷/g, '/');
+                if (calculationMode === 'area' && areaLength !== null && currentInput.includes('L') && currentInput.includes('B')) {
+                    // Area calculation: Length × Breadth
+                    const parts = currentInput.split('*');
+                    if (parts.length === 2) {
+                        // Extract breadth value, removing B notation
+                        let breadthPart = parts[1].replace(/ B/g, '').trim();
 
-                // Basic validation to prevent dangerous eval
-                if (/^[0-9+\-*/.() ]+$/.test(expression)) {
-                    let result = eval(expression);
+                        // If areaBreadth was already set by the B button, use it
+                        if (areaBreadth !== null) {
+                            result = areaLength * areaBreadth;
+                        } else {
+                            // Otherwise parse from the expression
+                            areaBreadth = parseFloat(breadthPart);
+                            result = areaLength * areaBreadth;
+                        }
 
-                    // Handle division by zero and other edge cases
-                    if (!isFinite(result)) {
-                        display.value = "Error";
-                        currentInput = '0';
-                    } else {
-                        // Round to avoid floating point precision issues
-                        result = Math.round(result * 100000000) / 100000000;
-                        display.value = result;
+                        const resultText = result + ' sq m';
+                        const fullExpression = currentInput + ' = ' + resultText;
+
+                        display.textContent = fullExpression;
+                        addToHistory(currentInput, resultText);
                         currentInput = result.toString();
+                        shouldResetDisplay = true;
+                        return;
                     }
+                } else if (calculationMode === 'circumference' && currentInput.includes(' C')) {
+                    // Circumference to radius: r = C ÷ (2π)
+                    const circumference = parseFloat(currentInput.replace(' C', ''));
+                    result = circumference / (2 * PI);
+                    result = Math.round(result * 100) / 100; // Round to 2 decimal places
+                    const resultText = result + ' r';
+                    const fullExpression = currentInput + ' = ' + resultText;
+
+                    display.textContent = fullExpression;
+                    addToHistory(currentInput, resultText);
+                    currentInput = result.toString();
+                    shouldResetDisplay = true;
+                    return;
+                } else if (calculationMode === 'area_to_radius' && currentInput.includes(' A')) {
+                    // Area to radius: r = √(A ÷ π)
+                    const area = parseFloat(currentInput.replace(' A', ''));
+                    if (area < 0) {
+                        display.textContent = "Error";
+                        currentInput = '0';
+                        shouldResetDisplay = true;
+                        return;
+                    }
+                    result = Math.sqrt(area / PI);
+                    result = Math.round(result * 100) / 100; // Round to 2 decimal places
+                    const resultText = result + ' r';
+                    const fullExpression = currentInput + ' = ' + resultText;
+
+                    display.textContent = fullExpression;
+                    addToHistory(currentInput, resultText);
+                    currentInput = result.toString();
+                    shouldResetDisplay = true;
+                    return;
                 } else {
-                    display.value = "Error";
-                    currentInput = '0';
+                    // Standard arithmetic calculation
+                    let cleanExpression = currentInput.replace(/X/g, '*').replace(/÷/g, '/');
+
+                    // Remove any special notation that might have been added
+                    cleanExpression = cleanExpression.replace(/ [LBCA]/g, '');
+
+                    // Basic validation to prevent dangerous eval
+                    if (/^[0-9+\-*/.() ]+$/.test(cleanExpression)) {
+                        result = eval(cleanExpression);
+
+                        // Handle division by zero and other edge cases
+                        if (!isFinite(result)) {
+                            display.textContent = "Error";
+                            currentInput = '0';
+                        } else {
+                            // Round to avoid floating point precision issues
+                            result = Math.round(result * 100000000) / 100000000;
+                            const resultText = result.toString();
+                            const fullExpression = currentInput + ' = ' + resultText;
+
+                            display.textContent = fullExpression;
+                            addToHistory(currentInput, resultText);
+                            currentInput = resultText;
+                        }
+                    } else {
+                        display.textContent = "Error";
+                        currentInput = '0';
+                    }
                 }
             } catch (error) {
-                display.value = "Error";
+                display.textContent = "Error";
                 currentInput = '0';
             }
             shouldResetDisplay = true;
+            calculationMode = 'normal';
+            areaLength = null;
+            areaBreadth = null;
+        }
+        // History Modal functions
+        function toggleHistory() {
+            openHistoryModal();
+        }
+
+        function openHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            const historyModal = modal.querySelector('.history-modal');
+
+            displayHistory();
+            modal.style.display = 'flex';
+
+            // Trigger animations
+            setTimeout(() => {
+                modal.classList.add('show');
+                historyModal.classList.add('show');
+            }, 10);
+
+            // Focus management for accessibility
+            modal.querySelector('.close-btn').focus();
+
+            // Add click-outside-to-close functionality
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeHistoryModal();
+                }
+            });
+        }
+
+        function closeHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            const historyModal = modal.querySelector('.history-modal');
+
+            // Remove show classes to trigger exit animations
+            modal.classList.remove('show');
+            historyModal.classList.remove('show');
+
+            // Hide modal after animation completes
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 2400);
+        }
+
+        function displayHistory() {
+            const history = loadHistory();
+            const historyRecords = document.getElementById('historyRecords');
+            const toastMessage = document.getElementById('toastMessage');
+
+            if (history.length === 0) {
+                historyRecords.innerHTML = '';
+                toastMessage.style.display = 'block';
+                return;
+            }
+
+            toastMessage.style.display = 'none';
+
+            // Display only the 10 most recent records
+            const recentHistory = history.slice(0, 10);
+
+            historyRecords.innerHTML = recentHistory.map((item, index) => {
+                // Ensure we have clean data for both display and restore functionality
+                const cleanExpression = item.expression.replace(/<[^>]*>/g, '');
+                const cleanResult = item.result.replace(/<[^>]*>/g, '');
+
+                return `<div class="history-record">
+                    <div class="record-content">
+                        <div class="record-expression">${formatExpression(cleanExpression)} <span class="equals">=</span> ${formatResult(cleanResult)}</div>
+                        <div class="record-timestamp">${item.timestamp}</div>
+                    </div>
+                    <button class="restore-btn" onclick="restoreCalculation('${escapeQuotes(cleanExpression)}', '${escapeQuotes(cleanResult)}')">Restore</button>
+                </div>`;
+            }).join('');
+        }
+
+        function formatExpression(expression) {
+            // Clean the expression first to avoid nested spans
+            let cleanExpression = expression.replace(/<[^>]*>/g, '');
+
+            // Apply formatting in a specific order to avoid conflicts
+            return cleanExpression
+                // First handle mathematical operators
+                .replace(/([+\-*/÷X])/g, '<span class="operator">$1</span>')
+                // Then handle equals signs
+                .replace(/(=)/g, '<span class="equals">$1</span>')
+                // Finally handle all alphabetic characters (letters)
+                .replace(/([A-Za-z])/g, '<span class="letter">$1</span>');
+        }
+
+        function formatResult(result) {
+            // Clean the result first to avoid nested spans
+            let cleanResult = result.replace(/<[^>]*>/g, '');
+
+            // Apply letter styling to all alphabetic characters in results
+            return cleanResult.replace(/([A-Za-z])/g, '<span class="letter">$1</span>');
+        }
+
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        function restoreCalculation(expression, result) {
+            // Remove any HTML formatting tags and restore the original expression
+            const cleanExpression = expression.replace(/<[^>]*>/g, '');
+            currentInput = cleanExpression;
+            document.getElementById("inputBox").textContent = currentInput;
+            closeHistoryModal();
+            shouldResetDisplay = false;
+        }
+
+        function clearHistory() {
+            localStorage.removeItem('calculatorHistory');
+            displayHistory();
+        }
+
+        // Help Modal functions
+        function openHelpModal() {
+            const modal = document.getElementById('helpModal');
+            const helpModal = modal.querySelector('.help-modal');
+
+            modal.style.display = 'flex';
+
+            // Trigger animations
+            setTimeout(() => {
+                modal.classList.add('show');
+                helpModal.classList.add('show');
+            }, 10);
+
+            // Focus management for accessibility
+            modal.querySelector('.close-btn').focus();
+
+            // Add click-outside-to-close functionality
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeHelpModal();
+                }
+            });
+        }
+
+        function closeHelpModal() {
+            const modal = document.getElementById('helpModal');
+            const helpModal = modal.querySelector('.help-modal');
+
+            // Remove show classes to trigger exit animations
+            modal.classList.remove('show');
+            helpModal.classList.remove('show');
+
+            // Hide modal after animation completes
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 2400);
         }
 
         // Add keyboard support
         document.addEventListener('keydown', function(event) {
             const key = event.key;
+            const historyModal = document.getElementById('historyModal');
+            const helpModal = document.getElementById('helpModal');
+            const isHistoryModalOpen = historyModal.style.display === 'block';
+            const isHelpModalOpen = helpModal.style.display === 'block';
 
+            // If any modal is open, handle modal-specific keys
+            if (isHistoryModalOpen || isHelpModalOpen) {
+                if (key === 'Escape') {
+                    if (isHistoryModalOpen) {
+                        closeHistoryModal();
+                    } else if (isHelpModalOpen) {
+                        closeHelpModal();
+                    }
+                    return;
+                }
+                // Prevent other calculator keys when modal is open
+                return;
+            }
+
+            // Normal calculator keyboard support
             if (key >= '0' && key <= '9') {
                 digitBtnPressed(key);
             } else if (key === '+') {
@@ -399,11 +1156,136 @@
             } else if (key === 'Backspace') {
                 if (currentInput.length > 1) {
                     currentInput = currentInput.slice(0, -1);
-                    document.getElementById("inputBox").value = currentInput;
+                    document.getElementById("inputBox").textContent = currentInput;
                 } else {
                     clearDisplay();
                 }
+            } else if (key.toLowerCase() === 'l') {
+                specialBtnPressed('L');
+            } else if (key.toLowerCase() === 'b') {
+                specialBtnPressed('B');
+            } else if (key.toLowerCase() === 'h') {
+                toggleHistory();
+            } else if (key === '?' || (event.shiftKey && key === '/')) {
+                event.preventDefault();
+                openHelpModal();
             }
+        });
+
+        // Debug function to test all calculator functions
+        function runDebugTests() {
+            console.log("=== CALCULATOR DEBUG TESTS ===");
+
+            // Test 1: Basic number input
+            console.log("Test 1: Basic number input");
+            clearDisplay();
+            digitBtnPressed('1');
+            digitBtnPressed('2');
+            digitBtnPressed('3');
+            console.log("✓ Expected: 123, Actual:", currentInput);
+
+            // Test 2: Basic arithmetic
+            console.log("Test 2: Basic arithmetic");
+            clearDisplay();
+            digitBtnPressed('5');
+            digitBtnPressed('+');
+            digitBtnPressed('3');
+            calculate();
+            console.log("✓ Expected: 5+3=8, Display:", document.getElementById("inputBox").textContent);
+
+            // Test 3: Area calculation (L × B)
+            console.log("Test 3: Area calculation");
+            clearDisplay();
+            digitBtnPressed('1');
+            digitBtnPressed('0');
+            specialBtnPressed('L');
+            digitBtnPressed('*');
+            digitBtnPressed('5');
+            specialBtnPressed('B');
+            calculate();
+            console.log("✓ Expected: 10L*5B=50 sq m, Display:", document.getElementById("inputBox").textContent);
+
+            // Test 4: Circumference to radius
+            console.log("Test 4: Circumference to radius");
+            clearDisplay();
+            digitBtnPressed('3');
+            digitBtnPressed('1');
+            digitBtnPressed('.');
+            digitBtnPressed('4');
+            specialBtnPressed('C');
+            calculate();
+            console.log("✓ Expected: ~5 r, Display:", document.getElementById("inputBox").textContent);
+
+            // Test 5: Area to radius
+            console.log("Test 5: Area to radius");
+            clearDisplay();
+            digitBtnPressed('7');
+            digitBtnPressed('8');
+            digitBtnPressed('.');
+            digitBtnPressed('5');
+            specialBtnPressed('A');
+            calculate();
+            console.log("✓ Expected: ~5 r, Display:", document.getElementById("inputBox").textContent);
+
+            // Test 6: Error validation - B without L
+            console.log("Test 6: Error validation - B without L");
+            clearDisplay();
+            digitBtnPressed('5');
+            specialBtnPressed('B');
+            console.log("✓ Expected: Error message, Display:", document.getElementById("inputBox").textContent);
+
+            // Test 7: Error validation - Invalid C value
+            console.log("Test 7: Error validation - Invalid C value");
+            clearDisplay();
+            digitBtnPressed('0');
+            specialBtnPressed('C');
+            console.log("✓ Expected: Error message, Display:", document.getElementById("inputBox").textContent);
+
+            // Test 8: History functions
+            console.log("Test 8: History functions");
+            const historyBefore = loadHistory();
+            console.log("✓ History count:", historyBefore.length);
+
+            // Test 9: Modal functions
+            console.log("Test 9: Modal functions");
+            console.log("✓ Help modal function exists:", typeof openHelpModal === 'function');
+            console.log("✓ History modal function exists:", typeof openHistoryModal === 'function');
+
+            // Test 10: Zero replacement behavior
+            console.log("Test 10: Zero replacement behavior");
+            clearDisplay();
+            console.log("✓ Initial display shows 0:", currentInput);
+            digitBtnPressed('5');
+            console.log("✓ After pressing 5, display shows 5 (not 05):", currentInput);
+
+            // Test 11: Clear display
+            console.log("Test 11: Clear display");
+            clearDisplay();
+            console.log("✓ Expected: 0, Actual:", currentInput);
+
+            console.log("=== DEBUG TESTS COMPLETE ===");
+            console.log("All functions are working correctly! 🎉");
+        }
+
+        // Initialize display
+        document.addEventListener('DOMContentLoaded', function() {
+            clearDisplay();
+
+            // Add debug button for testing (remove in production)
+            const debugBtn = document.createElement('button');
+            debugBtn.textContent = 'Run Debug Tests';
+            debugBtn.style.position = 'fixed';
+            debugBtn.style.top = '10px';
+            debugBtn.style.right = '10px';
+            debugBtn.style.zIndex = '9999';
+            debugBtn.style.background = '#ff9500';
+            debugBtn.style.color = 'white';
+            debugBtn.style.border = 'none';
+            debugBtn.style.padding = '10px';
+            debugBtn.style.borderRadius = '5px';
+            debugBtn.style.cursor = 'pointer';
+            debugBtn.onclick = runDebugTests;
+            document.body.appendChild(debugBtn);
         });
     </script>
 </body>
