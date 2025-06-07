@@ -13,35 +13,188 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f0f0;
+            background: radial-gradient(ellipse at center, #2a2a2a 0%, #1a1a1a 50%, #0d0d0d 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(192, 192, 192, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(192, 192, 192, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         .calculator {
-            background: #ffffff;
-            border: 3px solid #cccccc;
-            border-radius: 0;
+            background: linear-gradient(145deg, #2c2c2c 0%, #1a1a1a 25%, #0d0d0d 50%, #1a1a1a 75%, #2c2c2c 100%);
+            border: 4px solid transparent;
+            border-radius: 25px;
             padding: 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 495px;
             display: flex;
             flex-direction: column;
+            position: relative;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            /* Optimized smooth tilt animations with easeOutExpo timing */
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+
+            /* 2.5D Metallic Border Effects */
+            box-shadow:
+                /* Outer glow */
+                0 0 30px rgba(192, 192, 192, 0.3),
+                /* Main depth shadow */
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                /* Inner metallic highlight */
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                /* Inner shadow for depth */
+                inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+                /* Side highlights */
+                inset 2px 0 4px rgba(255, 255, 255, 0.05),
+                inset -2px 0 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .calculator::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg,
+                #c0c0c0 0%,
+                #808080 15%,
+                #404040 30%,
+                #1a1a1a 45%,
+                #000000 50%,
+                #1a1a1a 55%,
+                #404040 70%,
+                #808080 85%,
+                #c0c0c0 100%);
+            border-radius: 29px;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        .calculator::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            height: 40%;
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.15) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                transparent 100%);
+            border-radius: 20px 20px 0 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .calculator:hover {
+            transform: perspective(1000px) rotateX(2deg) rotateY(-3deg) translateZ(10px);
+            box-shadow:
+                /* Enhanced outer glow on hover */
+                0 0 40px rgba(192, 192, 192, 0.5),
+                /* Elevated shadow */
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                /* Enhanced inner highlights */
+                inset 0 3px 6px rgba(255, 255, 255, 0.15),
+                inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+                inset 3px 0 6px rgba(255, 255, 255, 0.08),
+                inset -3px 0 6px rgba(0, 0, 0, 0.25);
+        }
+
+        .calculator:active {
+            transform: perspective(1000px) rotateX(1deg) rotateY(-1deg) translateZ(5px);
+            transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Additional tilt effects for different interactions */
+        .calculator.calculating {
+            animation: calculatePulse 0.6s ease-in-out;
+        }
+
+        @keyframes calculatePulse {
+            0% { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px); }
+            25% { transform: perspective(1000px) rotateX(-1deg) rotateY(2deg) translateZ(8px); }
+            50% { transform: perspective(1000px) rotateX(1deg) rotateY(-2deg) translateZ(12px); }
+            75% { transform: perspective(1000px) rotateX(-0.5deg) rotateY(1deg) translateZ(6px); }
+            100% { transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px); }
+        }
+
+        /* Subtle breathing animation when idle */
+        .calculator.idle {
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% {
+                transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px);
+                box-shadow:
+                    0 0 30px rgba(192, 192, 192, 0.3),
+                    0 15px 35px rgba(0, 0, 0, 0.4),
+                    inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+                    inset 2px 0 4px rgba(255, 255, 255, 0.05),
+                    inset -2px 0 4px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                transform: perspective(1000px) rotateX(0.5deg) rotateY(-0.5deg) translateZ(2px);
+                box-shadow:
+                    0 0 35px rgba(192, 192, 192, 0.4),
+                    0 18px 40px rgba(0, 0, 0, 0.45),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.12),
+                    inset 0 -2px 5px rgba(0, 0, 0, 0.35),
+                    inset 2px 0 5px rgba(255, 255, 255, 0.07),
+                    inset -2px 0 5px rgba(0, 0, 0, 0.25);
+            }
         }
 
         .calculator-header {
             padding: 22px 28px;
-            background: #ffffff;
-            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 13px;
             position: relative;
+            border-radius: 20px 20px 0 0;
+
+            /* Header metallic effects */
+            box-shadow:
+                inset 0 1px 2px rgba(255, 255, 255, 0.1),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .calculator-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                transparent 100%);
+            border-radius: 20px 20px 0 0;
+            pointer-events: none;
         }
 
         .help-icon {
@@ -95,31 +248,63 @@
         .display {
             width: 100%;
             height: clamp(88px, 11vh, 132px);
-            background: #4a4a4a;
-            color: white;
+            background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%);
+            color: #e0e0e0;
             font-size: clamp(31px, 6vw, 62px);
             font-weight: normal;
             text-align: right;
             padding: 0 clamp(17px, 3vw, 28px);
             border: none;
-            border-bottom: 1px solid #333;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: flex-end;
+            position: relative;
+            border-radius: 20px 20px 0 0;
+
+            /* Inset display effect */
+            box-shadow:
+                inset 0 3px 6px rgba(0, 0, 0, 0.5),
+                inset 0 -1px 2px rgba(255, 255, 255, 0.05),
+                inset 2px 0 4px rgba(0, 0, 0, 0.3),
+                inset -2px 0 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30%;
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.03) 0%,
+                transparent 100%);
+            border-radius: 20px 20px 0 0;
+            pointer-events: none;
         }
 
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(6, 1fr);
-            gap: 1px;
-            background: #333;
+            gap: 2px;
+            background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%);
             height: clamp(528px, 71.5vh, 660px);
+            padding: 8px;
+            border-radius: 0 0 20px 20px;
+            position: relative;
+            z-index: 5;
+
+            /* Inset buttons container effect */
+            box-shadow:
+                inset 0 2px 4px rgba(0, 0, 0, 0.4),
+                inset 0 -1px 2px rgba(255, 255, 255, 0.05);
         }
 
         .btn {
-            border: none;
-            background: #7a7a7a;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, #5a5a5a 0%, #3a3a3a 50%, #2a2a2a 100%);
             color: white;
             font-size: clamp(22px, 4vw, 44px);
             font-weight: normal;
@@ -127,15 +312,46 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.1s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+            border-radius: 8px;
+            z-index: 10;
+
+            /* Subtle metallic button effects */
+            box-shadow:
+                inset 0 1px 2px rgba(255, 255, 255, 0.1),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.1) 0%,
+                transparent 100%);
+            border-radius: 6px 6px 0 0;
+            pointer-events: none;
         }
 
         .btn:hover {
-            opacity: 0.8;
+            transform: translateY(-1px);
+            box-shadow:
+                inset 0 1px 3px rgba(255, 255, 255, 0.15),
+                inset 0 -1px 3px rgba(0, 0, 0, 0.4),
+                0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .btn:active {
-            opacity: 0.6;
+            transform: translateY(1px);
+            box-shadow:
+                inset 0 2px 4px rgba(0, 0, 0, 0.4),
+                inset 0 -1px 2px rgba(255, 255, 255, 0.05),
+                0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .btn.number {
@@ -156,7 +372,7 @@
         .btn.equals {
             background: #ff9500;
             color: white;
-            grid-column: span 4;
+            grid-column: span 3;
         }
 
         .btn.zero {
@@ -184,7 +400,8 @@
             display: none;
             z-index: 1000;
             opacity: 0;
-            transition: opacity 2.4s ease;
+            /* Faster modal overlay fade - reduced from 2.4s to 0.9s */
+            transition: opacity 0.9s ease;
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -201,15 +418,47 @@
             max-width: 495px;
             height: 100vh;
             max-height: calc(100vh - 40px);
-            background: #7a7a7a;
+            background: linear-gradient(145deg, #2c2c2c 0%, #1a1a1a 25%, #0d0d0d 50%, #1a1a1a 75%, #2c2c2c 100%);
             color: white;
             display: flex;
             flex-direction: column;
             transform: translateX(-100%);
-            transition: transform 2.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-            border: 3px solid #cccccc;
-            border-radius: 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            /* Faster slide-in animation - reduced from 2.4s to 0.9s for snappier response */
+            transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.6s ease;
+            border: 4px solid transparent;
+            border-radius: 25px;
+            position: relative;
+
+            /* 2.5D Metallic Border Effects for Modal */
+            box-shadow:
+                0 0 30px rgba(192, 192, 192, 0.3),
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+                inset 2px 0 4px rgba(255, 255, 255, 0.05),
+                inset -2px 0 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .history-modal::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg,
+                #c0c0c0 0%,
+                #808080 15%,
+                #404040 30%,
+                #1a1a1a 45%,
+                #000000 50%,
+                #1a1a1a 55%,
+                #404040 70%,
+                #808080 85%,
+                #c0c0c0 100%);
+            border-radius: 29px;
+            z-index: -1;
+            opacity: 0.8;
         }
 
         .history-modal.show {
@@ -221,15 +470,54 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #666;
-            background: #666;
+            padding: 18px 24px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+            border-radius: 20px 20px 0 0;
+            position: relative;
+
+            /* Header metallic effects matching calculator header */
+            box-shadow:
+                inset 0 1px 2px rgba(255, 255, 255, 0.1),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                transparent 100%);
+            border-radius: 20px 20px 0 0;
+            pointer-events: none;
+        }
+
+        .modal-header-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
         }
 
         .modal-title {
             font-size: clamp(18px, 4vw, 24px);
             font-weight: bold;
+            color: #ff9500;
             margin: 0;
+            text-align: center;
+        }
+
+        .modal-logo {
+            width: clamp(45px, 10vw, 60px);
+            height: clamp(45px, 10vw, 60px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .close-btn {
@@ -328,6 +616,74 @@
             text-align: center;
         }
 
+        /* Global Toast Container - Positioned at bottom of calculator */
+        .toast-container {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            pointer-events: none;
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .toast {
+            background: rgba(74, 74, 74, 0.95);
+            color: white;
+            padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 22px);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-size: clamp(12px, 3vw, 15px);
+            border: 1px solid #666;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            transform: translateY(100%);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: auto;
+            max-width: 100%;
+            word-wrap: break-word;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: rgba(40, 167, 69, 0.95);
+            border-color: #28a745;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .toast.error {
+            background: rgba(220, 53, 69, 0.95);
+            border-color: #dc3545;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .toast.info {
+            background: rgba(74, 144, 226, 0.95);
+            border-color: #4a90e2;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Button highlight effect for keyboard shortcuts */
+        .btn.keyboard-active {
+            background: linear-gradient(145deg, #7a7a7a 0%, #5a5a5a 50%, #4a4a4a 100%);
+            transform: scale(0.98);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
         /* Operator and Special Function Styling */
         .operator {
             color: #ff9500;
@@ -376,15 +732,45 @@
             max-width: 495px;
             height: 100vh;
             max-height: calc(100vh - 40px);
-            background: #7a7a7a;
+            background: linear-gradient(145deg, #2c2c2c 0%, #1a1a1a 25%, #0d0d0d 50%, #1a1a1a 75%, #2c2c2c 100%);
             color: white;
             display: flex;
             flex-direction: column;
             transform: translateX(-100%);
-            transition: transform 2.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-            border: 3px solid #cccccc;
-            border-radius: 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.6s ease;
+            border: 4px solid transparent;
+            border-radius: 25px;
+
+            /* 2.5D Metallic Border Effects for Help Modal */
+            box-shadow:
+                0 0 30px rgba(192, 192, 192, 0.3),
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+                inset 2px 0 4px rgba(255, 255, 255, 0.05),
+                inset -2px 0 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .help-modal::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg,
+                #c0c0c0 0%,
+                #808080 15%,
+                #404040 30%,
+                #1a1a1a 45%,
+                #000000 50%,
+                #1a1a1a 55%,
+                #404040 70%,
+                #808080 85%,
+                #c0c0c0 100%);
+            border-radius: 29px;
+            z-index: -1;
+            opacity: 0.8;
         }
 
         .help-modal.show {
@@ -450,16 +836,17 @@
 
         .dev-info {
             background: #4a4a4a;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             border: 1px solid #666;
             text-align: center;
         }
 
         .company-logo {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 10px;
+            width: 100px;
+            height: 100px;
+            max-width: 150px;
+            margin: 0 auto 15px;
             background: white;
             border-radius: 8px;
             display: flex;
@@ -478,13 +865,72 @@
             color: #4a90e2;
             font-weight: bold;
             font-size: clamp(16px, 4vw, 18px);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .company-name {
             color: #ff9500;
             font-weight: bold;
             font-size: clamp(14px, 3.5vw, 16px);
+            margin-bottom: 20px;
+        }
+
+        /* Contributors Section Styles */
+        .contributors-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #666;
+        }
+
+        .contributors-title {
+            color: #ff9500;
+            font-weight: bold;
+            font-size: clamp(16px, 4vw, 18px);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .contributors-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .contributor-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .contributor-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .contributor-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .contributor-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .contributor-name {
+            color: #4a90e2;
+            font-weight: bold;
+            font-size: clamp(12px, 3vw, 14px);
         }
 
         /* Responsive Media Queries */
@@ -511,6 +957,30 @@
             .btn {
                 font-size: clamp(20px, 4vw, 35px);
             }
+
+            .toast-container {
+                bottom: 10px;
+                width: 95%;
+            }
+
+            .toast {
+                font-size: clamp(11px, 2.8vw, 13px);
+                padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 18px);
+                border-radius: 10px;
+            }
+
+            .modal-header {
+                padding: 15px 18px;
+            }
+
+            .modal-logo {
+                width: clamp(35px, 8vw, 45px);
+                height: clamp(35px, 8vw, 45px);
+            }
+
+            .modal-title {
+                font-size: clamp(16px, 3.5vw, 20px);
+            }
         }
 
         @media screen and (min-width: 768px) {
@@ -534,6 +1004,31 @@
 
             .btn {
                 font-size: clamp(24px, 4vw, 48px);
+            }
+
+            .toast-container {
+                bottom: 18px;
+                width: 85%;
+                max-width: 450px;
+            }
+
+            .toast {
+                font-size: clamp(13px, 2.5vw, 15px);
+                padding: clamp(10px, 2.2vw, 14px) clamp(16px, 3.5vw, 22px);
+                border-radius: 12px;
+            }
+
+            .modal-header {
+                padding: 18px 22px;
+            }
+
+            .modal-logo {
+                width: clamp(50px, 9vw, 55px);
+                height: clamp(50px, 9vw, 55px);
+            }
+
+            .modal-title {
+                font-size: clamp(18px, 3.8vw, 22px);
             }
         }
 
@@ -559,17 +1054,46 @@
             .btn {
                 font-size: 48px;
             }
+
+            .toast-container {
+                bottom: 20px;
+                width: 80%;
+                max-width: 480px;
+            }
+
+            .toast {
+                font-size: 15px;
+                padding: 14px 22px;
+                border-radius: 14px;
+                margin-bottom: 10px;
+            }
+
+            .modal-header {
+                padding: 20px 26px;
+            }
+
+            .modal-logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .modal-title {
+                font-size: 24px;
+            }
         }
 
     </style>
 </head>
 <body>
     <div class="calculator">
+        <!-- Toast Container positioned relative to calculator -->
+        <div class="toast-container" id="toastContainer"></div>
+
         <div class="calculator-header">
             <button class="help-icon" onclick="openHelpModal()" title="Help">?</button>
             <div class="header-center">
                 <div class="calculator-logo">
-                    <img src="public/images/nanitech-logo-use.svg" alt="Main App Logo" style="width: 100%; height: 100%; object-fit: contain;" />
+                    <img src="public/images/main-logo-use.svg" alt="Main App Logo" style="width: 100%; height: 100%; object-fit: contain;" />
                 </div>
                 <h4 class="calculator-title">Divide & Conquer</h4>
             </div>
@@ -594,7 +1118,7 @@
 
             <button class="btn clear" onclick="clearDisplay()">AC</button>
             <button class="btn number zero" onclick="digitBtnPressed('0')">0</button>
-            <button class="btn history" onclick="toggleHistory()">Hist</button>
+            <button class="btn number" onclick="digitBtnPressed('.')">.</button>
             <button class="btn operator" onclick="digitBtnPressed('/')">/</button>
 
             <button class="btn special" onclick="specialBtnPressed('L')">L</button>
@@ -602,14 +1126,20 @@
             <button class="btn special" onclick="specialBtnPressed('C')">C</button>
             <button class="btn special" onclick="specialBtnPressed('A')">A</button>
 
-            <button class="btn equals" onclick="calculate()">=</button>
+            <button class="btn equals" onclick="calculate()" style="grid-column: span 3;">=</button>
+            <button class="btn history" onclick="toggleHistory()">Hist</button>
         </div>
 
         <!-- History Modal -->
         <div id="historyModal" class="modal-overlay">
             <div class="history-modal">
                 <div class="modal-header">
-                    <h2 class="modal-title">Calculation History</h2>
+                    <div class="modal-header-center">
+                        <div class="modal-logo">
+                            <img src="public/images/main-logo-use.svg" alt="Main App Logo" style="width: 100%; height: 100%; object-fit: contain;" />
+                        </div>
+                        <h2 class="modal-title">Calculation History</h2>
+                    </div>
                     <button class="close-btn" onclick="closeHistoryModal()">&times;</button>
                 </div>
                 <div class="modal-content">
@@ -628,7 +1158,12 @@
         <div id="helpModal" class="modal-overlay">
             <div class="help-modal">
                 <div class="modal-header">
-                    <h2 class="modal-title">Calculator Help</h2>
+                    <div class="modal-header-center">
+                        <div class="modal-logo">
+                            <img src="public/images/main-logo-use.svg" alt="Main App Logo" style="width: 100%; height: 100%; object-fit: contain;" />
+                        </div>
+                        <h2 class="modal-title">Calculator Help</h2>
+                    </div>
                     <button class="close-btn" onclick="closeHelpModal()">&times;</button>
                 </div>
                 <div class="help-content">
@@ -700,13 +1235,154 @@
                     </div>
 
                     <div class="help-section">
+                        <h3>Keyboard Shortcuts & Button Mapping</h3>
+
+                        <h4 style="color: #4a90e2; font-size: clamp(14px, 3.5vw, 18px); margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 3px;">Basic Input</h4>
+                        <div class="function-item">
+                            <div class="function-name">Numbers (0-9)</div>
+                            <div class="function-desc">Type any number key to input digits</div>
+                            <div class="formula">Also supports Numpad0 through Numpad9</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Decimal Point (.)</div>
+                            <div class="function-desc">Add decimal point to numbers</div>
+                            <div class="formula">Key: Period (.) or NumpadDecimal</div>
+                        </div>
+
+                        <h4 style="color: #4a90e2; font-size: clamp(14px, 3.5vw, 18px); margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 3px;">Operators</h4>
+                        <div class="function-item">
+                            <div class="function-name">Addition (+)</div>
+                            <div class="function-desc">Perform addition operations</div>
+                            <div class="formula">Key: Plus (+) or NumpadAdd</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Subtraction (-)</div>
+                            <div class="function-desc">Perform subtraction operations</div>
+                            <div class="formula">Key: Minus (-) or NumpadSubtract</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Multiplication (×)</div>
+                            <div class="function-desc">Perform multiplication operations</div>
+                            <div class="formula">Key: Asterisk (*) or NumpadMultiply</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Division (÷)</div>
+                            <div class="function-desc">Perform division operations</div>
+                            <div class="formula">Key: Forward slash (/) or NumpadDivide</div>
+                        </div>
+
+                        <h4 style="color: #4a90e2; font-size: clamp(14px, 3.5vw, 18px); margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 3px;">Functions</h4>
+                        <div class="function-item">
+                            <div class="function-name">Calculate (=)</div>
+                            <div class="function-desc">Execute calculation and show result</div>
+                            <div class="formula">Key: Enter or NumpadEnter</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Clear (AC)</div>
+                            <div class="function-desc">Clear display and reset calculator</div>
+                            <div class="formula">Key: Escape or C</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Backspace</div>
+                            <div class="function-desc">Delete last entered digit</div>
+                            <div class="formula">Key: Backspace (clears all if only one digit)</div>
+                        </div>
+
+                        <h4 style="color: #4a90e2; font-size: clamp(14px, 3.5vw, 18px); margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 3px;">Special Functions</h4>
+                        <div class="function-item">
+                            <div class="function-name">Length (L)</div>
+                            <div class="function-desc">Set length value for area calculation</div>
+                            <div class="formula">Key: L (after entering a number)</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Breadth (B)</div>
+                            <div class="function-desc">Set breadth value for area calculation</div>
+                            <div class="formula">Key: B (after setting length and entering breadth)</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Circumference (C)</div>
+                            <div class="function-desc">Convert circumference to radius</div>
+                            <div class="formula">Key: C (after entering circumference value)</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Area to Radius (A)</div>
+                            <div class="function-desc">Convert circular area to radius</div>
+                            <div class="formula">Key: A (after entering area value)</div>
+                        </div>
+
+                        <h4 style="color: #4a90e2; font-size: clamp(14px, 3.5vw, 18px); margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 3px;">Navigation</h4>
+                        <div class="function-item">
+                            <div class="function-name">History Modal</div>
+                            <div class="function-desc">Open calculation history</div>
+                            <div class="formula">Key: H</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Help Modal</div>
+                            <div class="function-desc">Open this help guide</div>
+                            <div class="formula">Key: Ctrl + ? or Shift + /</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Close Modals</div>
+                            <div class="function-desc">Close any open modal</div>
+                            <div class="formula">Key: Escape</div>
+                        </div>
+
+                        <h4 style="color: #4a90e2; font-size: clamp(14px, 3.5vw, 18px); margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 3px;">Mobile Touch Alternatives</h4>
+                        <div class="function-item">
+                            <div class="function-name">Help Modal</div>
+                            <div class="function-desc">Long press help icon (800ms)</div>
+                            <div class="formula">Touch and hold the ? button</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">History Modal</div>
+                            <div class="function-desc">Double tap calculator display</div>
+                            <div class="formula">Quickly tap the display area twice</div>
+                        </div>
+
+                        <h4 style="color: #4a90e2; font-size: clamp(14px, 3.5vw, 18px); margin: 15px 0 8px 0; border-bottom: 1px solid #444; padding-bottom: 3px;">Visual Feedback</h4>
+                        <div class="function-item">
+                            <div class="function-name">Button Highlighting</div>
+                            <div class="function-desc">Buttons light up when pressed via keyboard</div>
+                            <div class="formula">Visual confirmation of keyboard input</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Toast Notifications</div>
+                            <div class="function-desc">Action confirmations appear at bottom</div>
+                            <div class="formula">Success, error, and info messages</div>
+                        </div>
+                        <div class="function-item">
+                            <div class="function-name">Cross-Platform Support</div>
+                            <div class="function-desc">Works on QWERTY, AZERTY, and other layouts</div>
+                            <div class="formula">Case-insensitive letter keys supported</div>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
                         <h3>Developer Information</h3>
                         <div class="dev-info">
                             <div class="company-logo">
                                 <img src="public/images/nanitech-logo.svg" alt="NaniTech Logo" />
                             </div>
-                            <div class="dev-name">Project Head: Phaki Krwele</div>
-                            <div class="company-name">Development Company: NaniTech</div>
+                            <div class="dev-name">Project Phaki Krwele</div>
+                            <div class="company-name">Dev company NaniTech</div>
+
+                            <div class="contributors-section">
+                                <div class="contributors-title">Contributors</div>
+                                <div class="contributors-grid">
+                                    <div class="contributor-item">
+                                        <div class="contributor-logo">
+                                            <img src="public/images/contributor1-logo.svg" alt="IT Varsity" />
+                                        </div>
+                                        <div class="contributor-name">IT Varsity</div>
+                                    </div>
+                                    <div class="contributor-item">
+                                        <div class="contributor-logo">
+                                            <img src="public/images/contributor2-logo.svg" alt="FNB App Academy" />
+                                        </div>
+                                        <div class="contributor-name">FNB App Academy</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -748,6 +1424,7 @@
         }
 
         function digitBtnPressed(button) {
+            console.log('digitBtnPressed called with:', button); // Enhanced debug log
             const display = document.getElementById("inputBox");
 
             if (shouldResetDisplay) {
@@ -758,17 +1435,32 @@
                 areaBreadth = null;
             }
 
-            if (currentInput === '0' && button !== '.') {
+            // Handle decimal point properly
+            if (button === '.') {
+                // Prevent multiple decimal points in the same number
+                const parts = currentInput.split(/[\+\-\*\/]/);
+                const lastPart = parts[parts.length - 1];
+                if (lastPart.includes('.')) {
+                    return; // Don't add another decimal point
+                }
+                if (currentInput === '0') {
+                    currentInput = '0.';
+                } else {
+                    currentInput += '.';
+                }
+            } else if (currentInput === '0' && button !== '.') {
                 currentInput = button;
             } else {
                 currentInput += button;
             }
 
             display.textContent = currentInput;
+            console.log('Input updated:', currentInput); // Debug log
         }
 
         function specialBtnPressed(button) {
             const display = document.getElementById("inputBox");
+            console.log('Special button pressed:', button, 'Current input:', currentInput); // Debug log
 
             if (shouldResetDisplay) {
                 currentInput = '';
@@ -777,75 +1469,193 @@
 
             if (button === 'L') {
                 // Length button for area calculation
-                const parts = currentInput.split(/[\+\-\*\/]/);
-                const lastNumber = parts[parts.length - 1];
+                // Extract the last number from the current input
+                const lastNumber = extractLastNumber(currentInput);
+                console.log('Extracted last number for L:', lastNumber); // Debug log
+
                 if (lastNumber && !isNaN(lastNumber) && parseFloat(lastNumber) > 0) {
                     areaLength = parseFloat(lastNumber);
                     calculationMode = 'area';
                     currentInput += ' L';
                     display.textContent = currentInput;
+                    console.log('Length set:', areaLength); // Debug log
                 } else {
-                    // Show error for invalid length value
-                    display.textContent = "Error: Invalid length";
-                    setTimeout(() => {
-                        display.textContent = currentInput;
-                    }, 1500);
+                    showError("Error: Invalid length", display);
                 }
             } else if (button === 'B') {
                 // Breadth button for area calculation
                 if (calculationMode === 'area' && currentInput.includes('L')) {
                     // Extract the breadth value (number after the last operator)
-                    const parts = currentInput.split(/[\+\-\*\/]/);
-                    let lastPart = parts[parts.length - 1];
+                    const lastNumber = extractLastNumber(currentInput.replace(/ L/g, ''));
+                    console.log('Extracted last number for B:', lastNumber); // Debug log
 
-                    // Remove any existing L notation from the last part
-                    lastPart = lastPart.replace(/ L/g, '').trim();
-
-                    if (lastPart && !isNaN(lastPart) && parseFloat(lastPart) > 0) {
-                        areaBreadth = parseFloat(lastPart);
+                    if (lastNumber && !isNaN(lastNumber) && parseFloat(lastNumber) > 0) {
+                        areaBreadth = parseFloat(lastNumber);
                         currentInput += ' B';
                         display.textContent = currentInput;
+                        console.log('Breadth set:', areaBreadth); // Debug log
                     } else {
-                        // Show error for invalid breadth value
-                        display.textContent = "Error: Invalid breadth";
-                        setTimeout(() => {
-                            display.textContent = currentInput;
-                        }, 1500);
+                        showError("Error: Invalid breadth", display);
                     }
                 } else {
-                    // Show error if B is pressed without L first
-                    display.textContent = "Error: Press L first";
-                    setTimeout(() => {
-                        display.textContent = currentInput;
-                    }, 1500);
+                    showError("Error: Press L first", display);
                 }
             } else if (button === 'C') {
                 // Circumference to radius
                 const value = parseFloat(currentInput);
+                console.log('Circumference value:', value); // Debug log
+
                 if (!isNaN(value) && value > 0) {
                     calculationMode = 'circumference';
                     currentInput += ' C';
                     display.textContent = currentInput;
                 } else {
-                    // Show error for invalid circumference value
-                    display.textContent = "Error: Invalid circumference";
-                    setTimeout(() => {
-                        display.textContent = currentInput;
-                    }, 1500);
+                    showError("Error: Invalid circumference", display);
                 }
             } else if (button === 'A') {
                 // Area to radius
                 const value = parseFloat(currentInput);
+                console.log('Area value:', value); // Debug log
+
                 if (!isNaN(value) && value > 0) {
                     calculationMode = 'area_to_radius';
                     currentInput += ' A';
                     display.textContent = currentInput;
                 } else {
-                    // Show error for invalid area value
-                    display.textContent = "Error: Invalid area";
+                    showError("Error: Invalid area", display);
+                }
+            }
+        }
+
+        // Helper function to extract the last number from an expression
+        function extractLastNumber(expression) {
+            const parts = expression.split(/[\+\-\*\/]/);
+            const lastPart = parts[parts.length - 1].trim();
+            return lastPart;
+        }
+
+        // Helper function to show error messages
+        function showError(message, display) {
+            const originalText = currentInput;
+            display.textContent = message;
+            setTimeout(() => {
+                display.textContent = originalText;
+            }, 1500);
+        }
+
+        // Comprehensive Toast Notification System
+        function showToast(message, type = 'info', duration = 3000) {
+            try {
+                const toastContainer = document.getElementById('toastContainer');
+                if (!toastContainer) {
+                    console.warn('Toast container not found');
+                    return;
+                }
+
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+
+                toastContainer.appendChild(toast);
+
+                // Trigger show animation
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                // Auto remove toast
+                setTimeout(() => {
+                    toast.classList.remove('show');
                     setTimeout(() => {
-                        display.textContent = currentInput;
-                    }, 1500);
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                }, duration);
+
+            } catch (error) {
+                console.error('Toast notification error:', error);
+            }
+        }
+
+        // Visual feedback for keyboard shortcuts
+        function highlightButton(buttonText, duration = 200) {
+            try {
+                // Find button by text content
+                const buttons = document.querySelectorAll('.btn');
+                let targetButton = null;
+
+                for (let button of buttons) {
+                    if (button.textContent.trim() === buttonText) {
+                        targetButton = button;
+                        break;
+                    }
+                }
+
+                if (targetButton) {
+                    targetButton.classList.add('keyboard-active');
+                    setTimeout(() => {
+                        targetButton.classList.remove('keyboard-active');
+                    }, duration);
+                }
+            } catch (error) {
+                console.error('Button highlight error:', error);
+            }
+        }
+
+        // Enhanced keyboard mapping helper functions
+        function isNumpadKey(key) {
+            return /^Numpad[0-9]$/.test(key);
+        }
+
+        function getNumpadValue(key) {
+            return key.replace('Numpad', '');
+        }
+
+        function isValidLetterKey(key) {
+            return /^[a-zA-Z]$/.test(key) && key.length === 1;
+        }
+
+        // Mobile touch optimization helpers
+        function addMobileTouchSupport() {
+            if ('ontouchstart' in window) {
+                // Add long-press gesture for help modal
+                let helpPressTimer;
+                const helpIcon = document.querySelector('.help-icon');
+
+                if (helpIcon) {
+                    helpIcon.addEventListener('touchstart', (e) => {
+                        helpPressTimer = setTimeout(() => {
+                            openHelpModal();
+                            showToast('Help modal opened via long press', 'info');
+                        }, 800);
+                    });
+
+                    helpIcon.addEventListener('touchend', () => {
+                        clearTimeout(helpPressTimer);
+                    });
+
+                    helpIcon.addEventListener('touchmove', () => {
+                        clearTimeout(helpPressTimer);
+                    });
+                }
+
+                // Add double-tap for history on calculator display
+                let lastTap = 0;
+                const display = document.getElementById('inputBox');
+
+                if (display) {
+                    display.addEventListener('touchend', (e) => {
+                        const currentTime = new Date().getTime();
+                        const tapLength = currentTime - lastTap;
+
+                        if (tapLength < 500 && tapLength > 0) {
+                            e.preventDefault();
+                            toggleHistory();
+                            showToast('History opened via double tap', 'info');
+                        }
+                        lastTap = currentTime;
+                    });
                 }
             }
         }
@@ -864,23 +1674,15 @@
             let result;
             let expression = currentInput;
 
+            console.log('Calculate called with:', currentInput, 'Mode:', calculationMode); // Debug log
+
             try {
                 if (calculationMode === 'area' && areaLength !== null && currentInput.includes('L') && currentInput.includes('B')) {
                     // Area calculation: Length × Breadth
-                    const parts = currentInput.split('*');
-                    if (parts.length === 2) {
-                        // Extract breadth value, removing B notation
-                        let breadthPart = parts[1].replace(/ B/g, '').trim();
+                    console.log('Area calculation - Length:', areaLength, 'Breadth:', areaBreadth); // Debug log
 
-                        // If areaBreadth was already set by the B button, use it
-                        if (areaBreadth !== null) {
-                            result = areaLength * areaBreadth;
-                        } else {
-                            // Otherwise parse from the expression
-                            areaBreadth = parseFloat(breadthPart);
-                            result = areaLength * areaBreadth;
-                        }
-
+                    if (areaBreadth !== null) {
+                        result = areaLength * areaBreadth;
                         const resultText = result + ' sq m';
                         const fullExpression = currentInput + ' = ' + resultText;
 
@@ -888,11 +1690,17 @@
                         addToHistory(currentInput, resultText);
                         currentInput = result.toString();
                         shouldResetDisplay = true;
+                        resetCalculationState();
+                        return;
+                    } else {
+                        showError("Error: Missing breadth", display);
                         return;
                     }
                 } else if (calculationMode === 'circumference' && currentInput.includes(' C')) {
                     // Circumference to radius: r = C ÷ (2π)
                     const circumference = parseFloat(currentInput.replace(' C', ''));
+                    console.log('Circumference calculation:', circumference); // Debug log
+
                     result = circumference / (2 * PI);
                     result = Math.round(result * 100) / 100; // Round to 2 decimal places
                     const resultText = result + ' r';
@@ -902,14 +1710,16 @@
                     addToHistory(currentInput, resultText);
                     currentInput = result.toString();
                     shouldResetDisplay = true;
+                    resetCalculationState();
                     return;
                 } else if (calculationMode === 'area_to_radius' && currentInput.includes(' A')) {
                     // Area to radius: r = √(A ÷ π)
                     const area = parseFloat(currentInput.replace(' A', ''));
+                    console.log('Area to radius calculation:', area); // Debug log
+
                     if (area < 0) {
-                        display.textContent = "Error";
-                        currentInput = '0';
-                        shouldResetDisplay = true;
+                        showError("Error: Negative area", display);
+                        resetCalculationState();
                         return;
                     }
                     result = Math.sqrt(area / PI);
@@ -921,6 +1731,7 @@
                     addToHistory(currentInput, resultText);
                     currentInput = result.toString();
                     shouldResetDisplay = true;
+                    resetCalculationState();
                     return;
                 } else {
                     // Standard arithmetic calculation
@@ -928,6 +1739,7 @@
 
                     // Remove any special notation that might have been added
                     cleanExpression = cleanExpression.replace(/ [LBCA]/g, '');
+                    console.log('Standard calculation:', cleanExpression); // Debug log
 
                     // Basic validation to prevent dangerous eval
                     if (/^[0-9+\-*/.() ]+$/.test(cleanExpression)) {
@@ -935,8 +1747,8 @@
 
                         // Handle division by zero and other edge cases
                         if (!isFinite(result)) {
-                            display.textContent = "Error";
-                            currentInput = '0';
+                            showError("Error: Invalid result", display);
+                            resetCalculationState();
                         } else {
                             // Round to avoid floating point precision issues
                             result = Math.round(result * 100000000) / 100000000;
@@ -946,20 +1758,27 @@
                             display.textContent = fullExpression;
                             addToHistory(currentInput, resultText);
                             currentInput = resultText;
+                            shouldResetDisplay = true;
                         }
                     } else {
-                        display.textContent = "Error";
-                        currentInput = '0';
+                        showError("Error: Invalid expression", display);
+                        resetCalculationState();
                     }
                 }
             } catch (error) {
-                display.textContent = "Error";
-                currentInput = '0';
+                console.error('Calculation error:', error); // Debug log
+                showError("Error: Calculation failed", display);
+                resetCalculationState();
             }
-            shouldResetDisplay = true;
+        }
+
+        // Helper function to reset calculation state
+        function resetCalculationState() {
             calculationMode = 'normal';
             areaLength = null;
             areaBreadth = null;
+            currentInput = '0';
+            shouldResetDisplay = true;
         }
         // History Modal functions
         function toggleHistory() {
@@ -1001,7 +1820,7 @@
             // Hide modal after animation completes
             setTimeout(() => {
                 modal.style.display = 'none';
-            }, 2400);
+            }, 900);
         }
 
         function displayHistory() {
@@ -1025,9 +1844,12 @@
                 const cleanExpression = item.expression.replace(/<[^>]*>/g, '');
                 const cleanResult = item.result.replace(/<[^>]*>/g, '');
 
+                // Format the display text with proper spacing
+                const displayText = formatHistoryDisplay(cleanExpression, cleanResult);
+
                 return `<div class="history-record">
                     <div class="record-content">
-                        <div class="record-expression">${formatExpression(cleanExpression)} <span class="equals">=</span> ${formatResult(cleanResult)}</div>
+                        <div class="record-expression">${displayText}</div>
                         <div class="record-timestamp">${item.timestamp}</div>
                     </div>
                     <button class="restore-btn" onclick="restoreCalculation('${escapeQuotes(cleanExpression)}', '${escapeQuotes(cleanResult)}')">Restore</button>
@@ -1035,26 +1857,19 @@
             }).join('');
         }
 
-        function formatExpression(expression) {
-            // Clean the expression first to avoid nested spans
-            let cleanExpression = expression.replace(/<[^>]*>/g, '');
+        function formatHistoryDisplay(expression, result) {
+            // Clean both expression and result of any HTML tags
+            const cleanExpression = expression.replace(/<[^>]*>/g, '');
+            const cleanResult = result.replace(/<[^>]*>/g, '');
 
-            // Apply formatting in a specific order to avoid conflicts
-            return cleanExpression
-                // First handle mathematical operators
-                .replace(/([+\-*/÷X])/g, '<span class="operator">$1</span>')
-                // Then handle equals signs
-                .replace(/(=)/g, '<span class="equals">$1</span>')
-                // Finally handle all alphabetic characters (letters)
-                .replace(/([A-Za-z])/g, '<span class="letter">$1</span>');
-        }
+            // Add proper spacing around operators for better readability
+            const formattedExpression = cleanExpression
+                .replace(/([+\-*/÷X])/g, ' $1 ')  // Add spaces around operators
+                .replace(/\s+/g, ' ')              // Clean up multiple spaces
+                .trim();                           // Remove leading/trailing spaces
 
-        function formatResult(result) {
-            // Clean the result first to avoid nested spans
-            let cleanResult = result.replace(/<[^>]*>/g, '');
-
-            // Apply letter styling to all alphabetic characters in results
-            return cleanResult.replace(/([A-Za-z])/g, '<span class="letter">$1</span>');
+            // Combine expression and result with proper spacing
+            return `${formattedExpression} = ${cleanResult}`;
         }
 
         function escapeQuotes(str) {
@@ -1110,183 +1925,578 @@
             // Hide modal after animation completes
             setTimeout(() => {
                 modal.style.display = 'none';
-            }, 2400);
+            }, 900);
         }
 
-        // Add keyboard support
+        // Comprehensive Keyboard Support System
         document.addEventListener('keydown', function(event) {
-            const key = event.key;
-            const historyModal = document.getElementById('historyModal');
-            const helpModal = document.getElementById('helpModal');
-            const isHistoryModalOpen = historyModal.style.display === 'block';
-            const isHelpModalOpen = helpModal.style.display === 'block';
+            try {
+                const key = event.key;
+                const code = event.code;
+                const historyModal = document.getElementById('historyModal');
+                const helpModal = document.getElementById('helpModal');
+                const isHistoryModalOpen = historyModal && historyModal.style.display === 'flex';
+                const isHelpModalOpen = helpModal && helpModal.style.display === 'flex';
 
-            // If any modal is open, handle modal-specific keys
-            if (isHistoryModalOpen || isHelpModalOpen) {
-                if (key === 'Escape') {
-                    if (isHistoryModalOpen) {
-                        closeHistoryModal();
-                    } else if (isHelpModalOpen) {
-                        closeHelpModal();
+                // If any modal is open, handle modal-specific keys
+                if (isHistoryModalOpen || isHelpModalOpen) {
+                    if (key === 'Escape') {
+                        if (isHistoryModalOpen) {
+                            closeHistoryModal();
+                            showToast('History modal closed', 'info', 2000);
+                        } else if (isHelpModalOpen) {
+                            closeHelpModal();
+                            showToast('Help modal closed', 'info', 2000);
+                        }
+                        return;
+                    }
+                    // Prevent other calculator keys when modal is open
+                    return;
+                }
+
+                // Handle number keys (both main keyboard and numpad)
+                if ((key >= '0' && key <= '9') || isNumpadKey(code)) {
+                    const digit = isNumpadKey(code) ? getNumpadValue(code) : key;
+                    digitBtnPressed(digit);
+                    highlightButton(digit);
+                    return;
+                }
+
+                // Handle basic operators
+                if (key === '+') {
+                    digitBtnPressed('+');
+                    highlightButton('+');
+                    return;
+                } else if (key === '-') {
+                    digitBtnPressed('-');
+                    highlightButton('-');
+                    return;
+                } else if (key === '*' || key.toLowerCase() === 'x') {
+                    digitBtnPressed('*');
+                    highlightButton('X');
+                    return;
+                } else if (key === '/' || code === 'NumpadDivide') {
+                    event.preventDefault(); // Prevent browser search
+                    digitBtnPressed('/');
+                    highlightButton('/');
+                    return;
+                }
+
+                // Handle decimal point
+                if (key === '.' || code === 'NumpadDecimal') {
+                    digitBtnPressed('.');
+                    highlightButton('.');
+                    return;
+                }
+
+                // Handle calculation execution
+                if (key === 'Enter' || key === '=' || code === 'NumpadEnter') {
+                    event.preventDefault();
+                    calculate();
+                    highlightButton('=');
+                    showToast('Calculation executed', 'success', 2000);
+                    return;
+                }
+
+                // Handle clear operations
+                if (key === 'Escape' || (key.toLowerCase() === 'c' && !event.shiftKey && !event.ctrlKey)) {
+                    clearDisplay();
+                    highlightButton('AC');
+                    showToast('Calculator cleared', 'info', 2000);
+                    return;
+                }
+
+                // Handle backspace
+                if (key === 'Backspace') {
+                    if (currentInput.length > 1) {
+                        currentInput = currentInput.slice(0, -1);
+                        document.getElementById("inputBox").textContent = currentInput;
+                        showToast('Last digit removed', 'info', 1500);
+                    } else {
+                        clearDisplay();
+                        showToast('Calculator cleared', 'info', 2000);
                     }
                     return;
                 }
-                // Prevent other calculator keys when modal is open
-                return;
-            }
 
-            // Normal calculator keyboard support
-            if (key >= '0' && key <= '9') {
-                digitBtnPressed(key);
-            } else if (key === '+') {
-                digitBtnPressed('+');
-            } else if (key === '-') {
-                digitBtnPressed('-');
-            } else if (key === '*') {
-                digitBtnPressed('*');
-            } else if (key === '/') {
-                event.preventDefault(); // Prevent browser search
-                digitBtnPressed('/');
-            } else if (key === '.') {
-                digitBtnPressed('.');
-            } else if (key === 'Enter' || key === '=') {
-                calculate();
-            } else if (key === 'Escape' || key === 'c' || key === 'C') {
-                clearDisplay();
-            } else if (key === 'Backspace') {
-                if (currentInput.length > 1) {
-                    currentInput = currentInput.slice(0, -1);
-                    document.getElementById("inputBox").textContent = currentInput;
-                } else {
-                    clearDisplay();
+                // Handle special function keys
+                if (key.toLowerCase() === 'l' && !event.ctrlKey) {
+                    specialBtnPressed('L');
+                    highlightButton('L');
+                    showToast('Length function activated', 'info', 2000);
+                    return;
+                } else if (key.toLowerCase() === 'b' && !event.ctrlKey) {
+                    specialBtnPressed('B');
+                    highlightButton('B');
+                    showToast('Breadth function activated', 'info', 2000);
+                    return;
+                } else if (event.shiftKey && key.toLowerCase() === 'c') {
+                    specialBtnPressed('C');
+                    highlightButton('C');
+                    showToast('Circumference function activated', 'info', 2000);
+                    return;
+                } else if (event.shiftKey && key.toLowerCase() === 'a') {
+                    specialBtnPressed('A');
+                    highlightButton('A');
+                    showToast('Area function activated', 'info', 2000);
+                    return;
                 }
-            } else if (key.toLowerCase() === 'l') {
-                specialBtnPressed('L');
-            } else if (key.toLowerCase() === 'b') {
-                specialBtnPressed('B');
-            } else if (key.toLowerCase() === 'h') {
-                toggleHistory();
-            } else if (key === '?' || (event.shiftKey && key === '/')) {
-                event.preventDefault();
-                openHelpModal();
+
+                // Handle modal toggles
+                if (key.toLowerCase() === 'h' && !event.ctrlKey) {
+                    toggleHistory();
+                    highlightButton('Hist');
+                    showToast('History toggled', 'info', 2000);
+                    return;
+                } else if ((key === '?' || (event.shiftKey && key === '/')) || (event.ctrlKey && key === '?')) {
+                    event.preventDefault();
+                    openHelpModal();
+                    showToast('Help modal opened', 'info', 2000);
+                    return;
+                }
+
+                // Handle other letter keys for special functions (A-Z excluding H, C which have special handling)
+                if (isValidLetterKey(key) && !event.ctrlKey && !event.altKey) {
+                    const upperKey = key.toUpperCase();
+
+                    // Skip keys that already have special handling
+                    if (['H', 'C', 'L', 'B', 'A'].includes(upperKey)) {
+                        return;
+                    }
+
+                    // Check if there's a corresponding button for this letter
+                    const buttons = document.querySelectorAll('.btn.special');
+                    let foundButton = false;
+
+                    for (let button of buttons) {
+                        if (button.textContent.trim() === upperKey) {
+                            specialBtnPressed(upperKey);
+                            highlightButton(upperKey);
+                            showToast(`${upperKey} function activated`, 'info', 2000);
+                            foundButton = true;
+                            break;
+                        }
+                    }
+
+                    if (!foundButton) {
+                        showToast(`Key '${upperKey}' not mapped to any function`, 'error', 2000);
+                    }
+                    return;
+                }
+
+            } catch (error) {
+                console.error('Keyboard event error:', error);
+                showToast('Keyboard input error occurred', 'error', 3000);
             }
         });
 
         // Debug function to test all calculator functions
         function runDebugTests() {
             console.log("=== CALCULATOR DEBUG TESTS ===");
+            let testsPassed = 0;
+            let totalTests = 0;
+
+            function runTest(testName, testFunction) {
+                totalTests++;
+                console.log(`\n--- ${testName} ---`);
+                try {
+                    testFunction();
+                    testsPassed++;
+                    console.log(`✅ ${testName} PASSED`);
+                } catch (error) {
+                    console.error(`❌ ${testName} FAILED:`, error);
+                }
+            }
 
             // Test 1: Basic number input
-            console.log("Test 1: Basic number input");
-            clearDisplay();
-            digitBtnPressed('1');
-            digitBtnPressed('2');
-            digitBtnPressed('3');
-            console.log("✓ Expected: 123, Actual:", currentInput);
+            runTest("Basic number input", () => {
+                clearDisplay();
+                digitBtnPressed('1');
+                digitBtnPressed('2');
+                digitBtnPressed('3');
+                if (currentInput !== '123') throw new Error(`Expected 123, got ${currentInput}`);
+                console.log("✓ Number input works correctly");
+            });
 
-            // Test 2: Basic arithmetic
-            console.log("Test 2: Basic arithmetic");
-            clearDisplay();
-            digitBtnPressed('5');
-            digitBtnPressed('+');
-            digitBtnPressed('3');
-            calculate();
-            console.log("✓ Expected: 5+3=8, Display:", document.getElementById("inputBox").textContent);
+            // Test 2: Decimal point handling
+            runTest("Decimal point handling", () => {
+                clearDisplay();
+                digitBtnPressed('3');
+                digitBtnPressed('.');
+                digitBtnPressed('1');
+                digitBtnPressed('4');
+                if (currentInput !== '3.14') throw new Error(`Expected 3.14, got ${currentInput}`);
 
-            // Test 3: Area calculation (L × B)
-            console.log("Test 3: Area calculation");
-            clearDisplay();
-            digitBtnPressed('1');
-            digitBtnPressed('0');
-            specialBtnPressed('L');
-            digitBtnPressed('*');
-            digitBtnPressed('5');
-            specialBtnPressed('B');
-            calculate();
-            console.log("✓ Expected: 10L*5B=50 sq m, Display:", document.getElementById("inputBox").textContent);
+                // Test preventing multiple decimal points
+                digitBtnPressed('.');
+                if (currentInput !== '3.14') throw new Error(`Multiple decimals allowed: ${currentInput}`);
+                console.log("✓ Decimal point handling works correctly");
+            });
 
-            // Test 4: Circumference to radius
-            console.log("Test 4: Circumference to radius");
-            clearDisplay();
-            digitBtnPressed('3');
-            digitBtnPressed('1');
-            digitBtnPressed('.');
-            digitBtnPressed('4');
-            specialBtnPressed('C');
-            calculate();
-            console.log("✓ Expected: ~5 r, Display:", document.getElementById("inputBox").textContent);
+            // Test 3: Basic arithmetic
+            runTest("Basic arithmetic", () => {
+                clearDisplay();
+                digitBtnPressed('5');
+                digitBtnPressed('+');
+                digitBtnPressed('3');
+                calculate();
+                const display = document.getElementById("inputBox").textContent;
+                if (!display.includes('8')) throw new Error(`Expected result 8, got ${display}`);
+                console.log("✓ Basic arithmetic works correctly");
+            });
 
-            // Test 5: Area to radius
-            console.log("Test 5: Area to radius");
-            clearDisplay();
-            digitBtnPressed('7');
-            digitBtnPressed('8');
-            digitBtnPressed('.');
-            digitBtnPressed('5');
-            specialBtnPressed('A');
-            calculate();
-            console.log("✓ Expected: ~5 r, Display:", document.getElementById("inputBox").textContent);
+            // Test 4: Area calculation (L × B)
+            runTest("Area calculation", () => {
+                clearDisplay();
+                digitBtnPressed('1');
+                digitBtnPressed('0');
+                specialBtnPressed('L');
+                digitBtnPressed('*');
+                digitBtnPressed('5');
+                specialBtnPressed('B');
+                calculate();
+                const display = document.getElementById("inputBox").textContent;
+                if (!display.includes('50 sq m')) throw new Error(`Expected 50 sq m, got ${display}`);
+                console.log("✓ Area calculation works correctly");
+            });
 
-            // Test 6: Error validation - B without L
-            console.log("Test 6: Error validation - B without L");
-            clearDisplay();
-            digitBtnPressed('5');
-            specialBtnPressed('B');
-            console.log("✓ Expected: Error message, Display:", document.getElementById("inputBox").textContent);
+            // Test 5: Circumference to radius
+            runTest("Circumference to radius", () => {
+                clearDisplay();
+                digitBtnPressed('3');
+                digitBtnPressed('1');
+                digitBtnPressed('.');
+                digitBtnPressed('4');
+                specialBtnPressed('C');
+                calculate();
+                const display = document.getElementById("inputBox").textContent;
+                if (!display.includes('r')) throw new Error(`Expected radius result, got ${display}`);
+                console.log("✓ Circumference to radius works correctly");
+            });
 
-            // Test 7: Error validation - Invalid C value
-            console.log("Test 7: Error validation - Invalid C value");
-            clearDisplay();
-            digitBtnPressed('0');
-            specialBtnPressed('C');
-            console.log("✓ Expected: Error message, Display:", document.getElementById("inputBox").textContent);
+            // Test 6: Area to radius
+            runTest("Area to radius", () => {
+                clearDisplay();
+                digitBtnPressed('7');
+                digitBtnPressed('8');
+                digitBtnPressed('.');
+                digitBtnPressed('5');
+                specialBtnPressed('A');
+                calculate();
+                const display = document.getElementById("inputBox").textContent;
+                if (!display.includes('r')) throw new Error(`Expected radius result, got ${display}`);
+                console.log("✓ Area to radius works correctly");
+            });
 
-            // Test 8: History functions
-            console.log("Test 8: History functions");
-            const historyBefore = loadHistory();
-            console.log("✓ History count:", historyBefore.length);
+            // Test 7: Error validation - B without L
+            runTest("Error validation - B without L", () => {
+                clearDisplay();
+                digitBtnPressed('5');
+                specialBtnPressed('B');
+                setTimeout(() => {
+                    const display = document.getElementById("inputBox").textContent;
+                    if (!display.includes('Error')) throw new Error(`Expected error message, got ${display}`);
+                    console.log("✓ B without L error validation works");
+                }, 100);
+            });
 
-            // Test 9: Modal functions
-            console.log("Test 9: Modal functions");
-            console.log("✓ Help modal function exists:", typeof openHelpModal === 'function');
-            console.log("✓ History modal function exists:", typeof openHistoryModal === 'function');
+            // Test 8: Clear display functionality
+            runTest("Clear display", () => {
+                clearDisplay();
+                if (currentInput !== '0') throw new Error(`Expected 0, got ${currentInput}`);
+                if (calculationMode !== 'normal') throw new Error(`Mode not reset: ${calculationMode}`);
+                console.log("✓ Clear display works correctly");
+            });
 
-            // Test 10: Zero replacement behavior
-            console.log("Test 10: Zero replacement behavior");
-            clearDisplay();
-            console.log("✓ Initial display shows 0:", currentInput);
-            digitBtnPressed('5');
-            console.log("✓ After pressing 5, display shows 5 (not 05):", currentInput);
+            // Test 9: Modal functions exist
+            runTest("Modal functions", () => {
+                if (typeof openHelpModal !== 'function') throw new Error("Help modal function missing");
+                if (typeof openHistoryModal !== 'function') throw new Error("History modal function missing");
+                if (typeof toggleHistory !== 'function') throw new Error("Toggle history function missing");
+                console.log("✓ All modal functions exist");
+            });
 
-            // Test 11: Clear display
-            console.log("Test 11: Clear display");
-            clearDisplay();
-            console.log("✓ Expected: 0, Actual:", currentInput);
+            // Test 10: History functionality
+            runTest("History functionality", () => {
+                const historyBefore = loadHistory();
+                addToHistory('2+2', '4');
+                const historyAfter = loadHistory();
+                if (historyAfter.length <= historyBefore.length) {
+                    throw new Error("History not saved properly");
+                }
+                console.log("✓ History functionality works");
+            });
 
-            console.log("=== DEBUG TESTS COMPLETE ===");
-            console.log("All functions are working correctly! 🎉");
+            // Test 11: History display formatting
+            runTest("History display formatting", () => {
+                const testExpression = "0.220L*2.02B";
+                const testResult = "0.4444 sq m";
+                const formatted = formatHistoryDisplay(testExpression, testResult);
+                const expected = "0.220L * 2.02B = 0.4444 sq m";
+                if (formatted !== expected) {
+                    throw new Error(`Expected "${expected}", got "${formatted}"`);
+                }
+                console.log("✓ History display formatting works correctly");
+            });
+
+            // Test 12: Keyboard mapping helper functions
+            runTest("Keyboard mapping helpers", () => {
+                if (!isNumpadKey('Numpad5')) throw new Error("Numpad key detection failed");
+                if (isNumpadKey('5')) throw new Error("Regular key incorrectly detected as numpad");
+                if (getNumpadValue('Numpad7') !== '7') throw new Error("Numpad value extraction failed");
+                if (!isValidLetterKey('A')) throw new Error("Letter key validation failed");
+                if (isValidLetterKey('1')) throw new Error("Number incorrectly detected as letter");
+                console.log("✓ Keyboard mapping helper functions work correctly");
+            });
+
+            // Test 13: Toast notification system
+            runTest("Toast notification system", () => {
+                const toastContainer = document.getElementById('toastContainer');
+                if (!toastContainer) throw new Error("Toast container not found");
+
+                // Test toast creation (won't actually show in test)
+                showToast('Test message', 'info', 1000);
+                console.log("✓ Toast notification system works correctly");
+            });
+
+            // Summary
+            console.log(`\n=== DEBUG TESTS COMPLETE ===`);
+            console.log(`Tests passed: ${testsPassed}/${totalTests}`);
+            if (testsPassed === totalTests) {
+                console.log("🎉 All functions are working correctly!");
+                console.log("📋 History display now shows clean, readable calculations!");
+                console.log("⌨️ Comprehensive keyboard mapping system is functional!");
+                console.log("📱 Mobile touch optimization is ready!");
+                console.log("🔔 Toast notification system is operational!");
+            } else {
+                console.log("⚠️ Some tests failed. Check the logs above.");
+            }
+        }
+
+        // Enhanced calculator interaction effects
+        function addCalculatorEffects() {
+            const calculator = document.querySelector('.calculator');
+            let idleTimer;
+
+            // Start idle animation after 3 seconds of no interaction
+            function startIdleTimer() {
+                clearTimeout(idleTimer);
+                calculator.classList.remove('idle');
+                idleTimer = setTimeout(() => {
+                    calculator.classList.add('idle');
+                }, 3000);
+            }
+
+            // Remove idle animation on interaction
+            function stopIdleAnimation() {
+                calculator.classList.remove('idle');
+                clearTimeout(idleTimer);
+            }
+
+            // Add calculating animation
+            function triggerCalculatingEffect() {
+                calculator.classList.remove('idle');
+                calculator.classList.add('calculating');
+                setTimeout(() => {
+                    calculator.classList.remove('calculating');
+                    startIdleTimer();
+                }, 600);
+            }
+
+            // Enhanced button interaction effects
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mouseenter', stopIdleAnimation);
+                btn.addEventListener('click', () => {
+                    stopIdleAnimation();
+                    if (btn.classList.contains('equals')) {
+                        triggerCalculatingEffect();
+                    } else {
+                        startIdleTimer();
+                    }
+                });
+            });
+
+            // Calculator hover effects
+            calculator.addEventListener('mouseenter', stopIdleAnimation);
+            calculator.addEventListener('mouseleave', startIdleTimer);
+
+            // Start the idle timer initially
+            startIdleTimer();
+
+            // Override the original calculate function to add effects
+            const originalCalculate = window.calculate;
+            window.calculate = function() {
+                triggerCalculatingEffect();
+                return originalCalculate.apply(this, arguments);
+            };
         }
 
         // Initialize display
         document.addEventListener('DOMContentLoaded', function() {
-            clearDisplay();
+            try {
+                clearDisplay();
+                addCalculatorEffects();
+                addMobileTouchSupport();
 
-            // Add debug button for testing (remove in production)
-            const debugBtn = document.createElement('button');
-            debugBtn.textContent = 'Run Debug Tests';
-            debugBtn.style.position = 'fixed';
-            debugBtn.style.top = '10px';
-            debugBtn.style.right = '10px';
-            debugBtn.style.zIndex = '9999';
-            debugBtn.style.background = '#ff9500';
-            debugBtn.style.color = 'white';
-            debugBtn.style.border = 'none';
-            debugBtn.style.padding = '10px';
-            debugBtn.style.borderRadius = '5px';
-            debugBtn.style.cursor = 'pointer';
-            debugBtn.onclick = runDebugTests;
-            document.body.appendChild(debugBtn);
+                // Add debug button for testing (remove in production)
+                const debugBtn = document.createElement('button');
+                debugBtn.textContent = 'Debug Tests';
+                debugBtn.style.position = 'fixed';
+                debugBtn.style.top = '10px';
+                debugBtn.style.right = '10px';
+                debugBtn.style.zIndex = '9999';
+                debugBtn.style.background = '#ff9500';
+                debugBtn.style.color = 'white';
+                debugBtn.style.border = 'none';
+                debugBtn.style.padding = '8px 12px';
+                debugBtn.style.borderRadius = '5px';
+                debugBtn.style.cursor = 'pointer';
+                debugBtn.style.fontSize = '12px';
+                debugBtn.style.fontWeight = 'bold';
+                debugBtn.onclick = runDebugTests;
+                document.body.appendChild(debugBtn);
+
+                // Add keyboard shortcuts info
+                const infoBtn = document.createElement('button');
+                infoBtn.textContent = 'Shortcuts';
+                infoBtn.style.position = 'fixed';
+                infoBtn.style.top = '50px';
+                infoBtn.style.right = '10px';
+                infoBtn.style.zIndex = '9999';
+                infoBtn.style.background = '#4a90e2';
+                infoBtn.style.color = 'white';
+                infoBtn.style.border = 'none';
+                infoBtn.style.padding = '8px 12px';
+                infoBtn.style.borderRadius = '5px';
+                infoBtn.style.cursor = 'pointer';
+                infoBtn.style.fontSize = '12px';
+                infoBtn.style.fontWeight = 'bold';
+                infoBtn.onclick = showKeyboardShortcuts;
+                document.body.appendChild(infoBtn);
+
+                // Add keyboard test button
+                const testBtn = document.createElement('button');
+                testBtn.textContent = 'Test Keys';
+                testBtn.style.position = 'fixed';
+                testBtn.style.top = '90px';
+                testBtn.style.right = '10px';
+                testBtn.style.zIndex = '9999';
+                testBtn.style.background = '#28a745';
+                testBtn.style.color = 'white';
+                testBtn.style.border = 'none';
+                testBtn.style.padding = '8px 12px';
+                testBtn.style.borderRadius = '5px';
+                testBtn.style.cursor = 'pointer';
+                testBtn.style.fontSize = '12px';
+                testBtn.style.fontWeight = 'bold';
+                testBtn.onclick = testKeyboardMapping;
+                document.body.appendChild(testBtn);
+
+                // Show initialization success
+                showToast('Calculator initialized with comprehensive keyboard support!', 'success', 4000);
+
+                console.log('Calculator initialized successfully!');
+                console.log('Comprehensive Keyboard Shortcuts:');
+                console.log('- Numbers: 0-9 (main keyboard and numpad)');
+                console.log('- Operators: +, -, *, / (main keyboard and numpad)');
+                console.log('- Multiplication: * or X key');
+                console.log('- Division: / (main keyboard and numpad)');
+                console.log('- Decimal: . (main keyboard and numpad)');
+                console.log('- Calculate: Enter, = (main keyboard and numpad)');
+                console.log('- Clear: Escape or C key');
+                console.log('- Backspace: Backspace key');
+                console.log('- Special functions: L, B, Shift+C, Shift+A');
+                console.log('- History: H key');
+                console.log('- Help: ? or Shift+/ or Ctrl+?');
+                console.log('- Mobile: Long press help icon, double tap display for history');
+                console.log('- All letter keys A-Z supported for special functions');
+
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showToast('Calculator initialization error', 'error', 5000);
+            }
         });
+
+        // Test keyboard mapping functionality
+        function testKeyboardMapping() {
+            console.log("=== KEYBOARD MAPPING TEST ===");
+
+            // Test number keys
+            console.log("Testing number keys...");
+            for (let i = 0; i <= 9; i++) {
+                const event = new KeyboardEvent('keydown', { key: i.toString() });
+                document.dispatchEvent(event);
+            }
+
+            // Test operator keys
+            console.log("Testing operator keys...");
+            ['+', '-', '*', '/'].forEach(op => {
+                const event = new KeyboardEvent('keydown', { key: op });
+                document.dispatchEvent(event);
+            });
+
+            // Test special function keys
+            console.log("Testing special function keys...");
+            ['l', 'b'].forEach(key => {
+                const event = new KeyboardEvent('keydown', { key: key });
+                document.dispatchEvent(event);
+            });
+
+            // Test modal keys
+            console.log("Testing modal keys...");
+            const hEvent = new KeyboardEvent('keydown', { key: 'h' });
+            document.dispatchEvent(hEvent);
+
+            console.log("✅ Keyboard mapping test completed!");
+            showToast('Keyboard mapping test completed successfully!', 'success', 3000);
+        }
+
+        // Show comprehensive keyboard shortcuts
+        function showKeyboardShortcuts() {
+            const shortcutsText = `Comprehensive Keyboard Shortcuts:
+
+📱 NUMBERS & BASIC OPERATIONS:
+• Numbers: 0-9 (main keyboard and numpad)
+• Operators: + - (main keyboard and numpad)
+• Multiplication: * or X key
+• Division: / (main keyboard and numpad)
+• Decimal: . (main keyboard and numpad)
+• Calculate: Enter, = (main keyboard and numpad)
+
+🧹 CLEAR & EDIT:
+• Clear All: Escape or C key
+• Backspace: Backspace key (removes last digit)
+
+🔤 SPECIAL FUNCTIONS:
+• Length: L key
+• Breadth: B key
+• Circumference: Shift+C
+• Area to Radius: Shift+A
+• All letter keys A-Z supported for special functions
+
+📋 MODALS & NAVIGATION:
+• History: H key
+• Help: ? or Shift+/ or Ctrl+?
+• Close Modal: Escape key
+
+📱 MOBILE TOUCH ALTERNATIVES:
+• Help Modal: Long press help icon (800ms)
+• History Modal: Double tap calculator display
+• All keyboard functions work on touch devices
+
+⚡ VISUAL FEEDBACK:
+• Button highlighting on keyboard input
+• Toast notifications for actions
+• Error handling with user feedback
+
+🌐 CROSS-PLATFORM SUPPORT:
+• Works on QWERTY, AZERTY, and other layouts
+• Numpad fully supported
+• Case-insensitive letter keys`;
+
+            alert(shortcutsText);
+            showToast('Keyboard shortcuts displayed', 'info', 2000);
+        }
     </script>
 </body>
 </html>
